@@ -21,6 +21,9 @@ usage(){
   #  echo  $'\033[0;36m'"$1"
 }
 
+warning(){
+  echo $'\033[0;35m'"!! -- $1 -- !!";
+}
 ex(){
 # prints out example
 echo $'\033[0;32m'"$ $1";
@@ -84,7 +87,6 @@ source "$ROOTDIR/settings.sh"
 # header,subheader,normal,usage,ex,line
 case "$1" in 
   ("install")
-    #TODO 
       if [[ $# -gt 2 ]]; 
         then
         if [[ -d "$2" ]]; # if is directory
@@ -102,14 +104,32 @@ case "$1" in
     tree "$BOILERPLATESDIR"
     ;;
   ("uninstall")
-    if [[ -d "$BOILERPLATESDIR/$2" ]];
+    if [[ $# -gt 1 ]];
       then 
-        rm -rf "$BOILERPLATESDIR/$2";
+        if [[ -d "$BOILERPLATESDIR/$2" ]];
+          then 
+            rm -rf "$BOILERPLATESDIR/$2" &> /dev/null || warning "$2 not found.";
+          else
+            rm "$BOILERPLATESDIR/$2"   &> /dev/null || warning "$2 not found.";
+        fi
       else
-        rm "$BOILERPLATESDIR/$2";
+        subheader 'USAGE: boiler uninstall BOILERPLATE_NAME';
     fi
     ;;
-    
+
+  ("add")
+      if [[ $# -gt 1 ]]; 
+        then
+        if [[ -d "$2" ]]; # if is directory
+          then
+            cp -r  "$BOILERPLATESDIR/$2" . &> /dev/null || warning "$2 not found.";
+         else
+            cp "$BOILERPLATESDIR/$2" . &> /dev/null || warning  "$2 not found.";
+        fi
+      else
+        subheader ' USAGE: boiler add BOILERPLATE_NAME';
+      fi
+  ;;
   (*)
     echo 'Unknown option. To see instructions, please run  ';
     usage 'boiler';
