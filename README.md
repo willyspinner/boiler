@@ -1,6 +1,9 @@
 A quick command line tool for storing boilerplate code files.
 
-usage: boiler COMMAND [COMMAND_OPTIONS]
+usage: 
+```sh
+boiler COMMAND [COMMAND_OPTIONS]
+```
 ## List of COMMANDs:
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
