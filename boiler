@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# NEW VERSION
+# DIRECTORY OF ROOT:
+
+ROOTDIR='/Users/willyspinner/willysBin/boiler_project'
+# helper functions for styling:
+header(){
+  echo $'\033[0;35m'">>$1<<";
+}
+
+subheader(){
+  echo $'\033[0;37m\033[1m'"$1";
+}
+normal(){
+  echo $'\033[0;38m'"$1"
+}
+usage(){
+#    echo  $'\033[1;36m\033[0;36m'"$1"
+    
+  echo $'\033[0;38m\033[1m'"$1";
+  #  echo  $'\033[0;36m'"$1"
+}
+
+ex(){
+# prints out example
+echo $'\033[0;32m'"$ $1";
+}
+line(){
+  echo '-----------------'
+}
+# helper functions for copying and stuff.
+copy(){
+  # usage: copy my/tobe/boilerplate
+  cp -r "$1" .
+}
+# main code:
+if [[ $# -lt 1 ]]; then
+  { # subheader:
+  usage 'usage: boiler COMMAND [COMMAND_OPTIONS]';
+  header 'List of COMMANDs:'
+  line
+  # commands:
+  subheader 'ls';
+  normal 'List your boilerplates.'
+  line 
+  subheader 'install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]';
+  normal 'Install a boilerplate to boiler to be reused . '
+  echo '    - where PATH/TO/YOUR/BOILERPLAtE is the directory, or code, of your boilerplate'
+  echo '    - where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be "directorial"'
+  line; 
+
+  subheader 'uninstall BOILERPLATE_NAME';
+  normal 'remove a boilerplate from boiler. note that this is permanent. '
+  echo '    - where BOILERPLATE_NAME is the name of your boilerplate in boiler'
+  line;
+
+  subheader 'add BOILERPLATE_NAME';
+  normal 'copies the BOILERPLATE_NAME boilerplate to the current working directory.'
+  echo '    - where BOILERPLATE_NAME is the name of your boilerplate in boiler'
+  line;
+  
+  subheader 'edit BOILERPLATE_NAME';
+  normal "edit the file of BOILERPLATE_NAME. Note that this can't be a directory."
+
+  # examples
+  line;
+  echo ''
+  header 'Examples:'
+  line;
+  ex 'boiler install ~/willysBinSrc/reactcomponents/reactbutton.js'
+  normal 'install a react button as a new boilerplate called react/button.'
+ line; 
+  ex 'boiler ls'
+  normal 'list out boilerplates. In this case, you would see react/button.'
+  line;
+  ex 'boiler add react/button'
+  normal 'add a react/button boiler plate to current working directory.'
+  
+  # Footer
+  normal 'Made by Wilson Jusuf, Fearless Magicians.'
+}
+else 
+source "$ROOTDIR/settings.sh"
+# header,subheader,normal,usage,ex,line
+case "$1" in 
+  ("install")
+    #TODO 
+      if [[ $# -gt 2 ]]; 
+        then
+        if [[ -d "$2" ]]; # if is directory
+          then
+            cp -r "$2" "$BOILERPLATESDIR/$3";
+         else
+            cp "$2" "$BOILERPLATESDIR/$3"
+        fi
+      else
+        subheader 'USAGE: boiler install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]';
+      fi
+
+    ;;
+  ("ls"|"list")
+    tree "$BOILERPLATESDIR"
+    ;;
+  ("uninstall")
+    if [[ -d "$BOILERPLATESDIR/$2" ]];
+      then 
+        rm -rf "$BOILERPLATESDIR/$2";
+      else
+        rm "$BOILERPLATESDIR/$2";
+    fi
+    ;;
+    
+  (*)
+    echo 'Unknown option. To see instructions, please run  ';
+    usage 'boiler';
+    exit;
+    ;;
+esac
+
+fi
