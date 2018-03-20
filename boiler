@@ -87,8 +87,8 @@ source "$ROOTDIR/settings.sh"
 # header,subheader,normal,usage,ex,line
 case "$1" in 
   ("install")
-      if [[ $# -gt 2 ]]; 
-        then
+    if [[ $# -gt 1 ]]; 
+    then
         if [[ -d "$2" ]]; # if is directory
           then
             cp -r "$2" "$BOILERPLATESDIR/$3";
@@ -96,29 +96,30 @@ case "$1" in
             cp "$2" "$BOILERPLATESDIR/$3"
         fi
       else
-        subheader 'USAGE: boiler install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]';
+        usage 'USAGE: boiler install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]';
       fi
 
     ;;
   ("ls"|"list")
+    header "list of boilerplates:"
     tree "$BOILERPLATESDIR"
     ;;
-  ("uninstall")
+  ("uninstall" | "rm")
     if [[ $# -gt 1 ]];
-      then 
+      then
         if [[ -d "$BOILERPLATESDIR/$2" ]];
-          then 
+          then
             rm -rf "$BOILERPLATESDIR/$2" &> /dev/null || warning "$2 not found.";
           else
             rm "$BOILERPLATESDIR/$2"   &> /dev/null || warning "$2 not found.";
         fi
       else
-        subheader 'USAGE: boiler uninstall BOILERPLATE_NAME';
+        usage 'USAGE: boiler uninstall BOILERPLATE_NAME';
     fi
     ;;
 
   ("add")
-      if [[ $# -gt 1 ]]; 
+      if [[ $# -gt 1 ]];
         then
         if [[ -d "$2" ]]; # if is directory
           then
@@ -127,7 +128,7 @@ case "$1" in
             cp "$BOILERPLATESDIR/$2" . &> /dev/null || warning  "$2 not found.";
         fi
       else
-        subheader ' USAGE: boiler add BOILERPLATE_NAME';
+        usage ' USAGE: boiler add BOILERPLATE_NAME';
       fi
   ;;
   (*)
