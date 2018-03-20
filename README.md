@@ -1,7 +1,10 @@
 A quick command line tool for storing boilerplate code files.
 
-usage: boiler COMMAND [COMMAND_OPTIONS]
-## List of COMMANDs:
+usage: 
+```sh
+boiler COMMAND [COMMAND_OPTIONS]
+```
+# List of COMMANDs:
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -44,7 +47,7 @@ edit the file of BOILERPLATE_NAME. Note that this can't be a directory.
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
-## Examples:
+# Examples:
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -68,3 +71,15 @@ $ boiler add react/button
 add a react/button boiler plate to current working directory.
 > Made by Wilson Jusuf, Fearless Magicians.
 
+# requirements:
+* tree 
+
+To get this, simply: 
+
+```sh
+brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
+```
+
+# TODO:
+- [ ] Support for boilerplates with dependencies ,i.e. npm scripts, yarn, brew, etc. (currently only has rigid support for single-file boilerplates / whole directory boilerplates.
+- [ ] automated version control
