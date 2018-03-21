@@ -1,148 +1,153 @@
-#!/usr/bin/env bash
-# NEW VERSION
-# DIRECTORY OF ROOT:
-
+#!/usr/bin/env python3
+from termcolor import colored, cprint
+import os
+import sys
+import subprocess
 ROOTDIR='/Users/willyspinner/willysBin/boiler_project'
-# helper functions for styling:
-header(){
-  echo $'\033[0;35m'">>$1<<";
-}
+from utils.helpers import text, separator
+sys.path.append(ROOTDIR)
+import settings
 
-subheader(){
-  echo $'\033[0;37m\033[1m'"$1";
-}
-normal(){
-  echo $'\033[0;38m'"$1"
-}
-usage(){
-#    echo  $'\033[1;36m\033[0;36m'"$1"
-    
-  echo $'\033[0;38m\033[1m'"$1";
-  #  echo  $'\033[0;36m'"$1"
-}
+# helper functions:
+def getFlagArg(flag):
+    """
+    see if a flag exists, and if so get its value, otherwise return NULL
+    """
+    for i in range(2,len(sys.argv)):
+        if sys.argv[i] == flag:
+            if i == len(sys.argv) -1:
+                return 'FLAG_FOUND_LAST'
+            return sys.argv[i + 1]
+    return 'NULL'
+# recall that sys.argv is an array where [0] : script name, [1] command verb ... 
+#[N] Nth arg.
+if len(sys.argv) > 1:
+    command=sys.argv[1]
+    if command == 'install':
+        if len(sys.argv) > 2: # i.e if it is boiler install .....
+            installName = os.path.basename(sys.argv[2])
+            # if the user wants to get a custom name:
+            nameArg = getFlagArg('-n')
+            if nameArg != 'FLAG_FOUND_LAST' and nameArg != 'NULL':
+                installName = nameArg
 
-warning(){
-  echo $'\033[0;35m'"!! -- $1 -- !!";
-}
-ex(){
-# prints out example
-echo $'\033[0;32m'"$ $1";
-}
-line(){
-  echo '-----------------'
-}
-# helper functions for copying and stuff.
-copy(){
-  # usage: copy my/tobe/boilerplate
-  cp -r "$1" .
-}
-# main code:
-if [[ $# -lt 1 ]]; then
-  { # subheader:
-  usage 'usage: boiler COMMAND [COMMAND_OPTIONS]';
-  header 'List of COMMANDs:'
-  line
-  # commands:
-  subheader 'ls';
-  normal 'List your boilerplates.'
-  line 
-  subheader 'install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]';
-  normal 'Install a boilerplate to boiler to be reused . '
-  echo '    - where PATH/TO/YOUR/BOILERPLAtE is the directory, or code, of your boilerplate'
-  echo '    - where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be "directorial"'
-  line; 
+            # if the user wants to specify and -i (info) textfile
+            if getFlagArg('-i') != 'NULL':
+                os.system(' '.join([settings.EDITOR, settings.BOILERPLATESINFODIR+'/'+installName+'.txt']))
 
-  subheader 'uninstall BOILERPLATE_NAME';
-  normal 'remove a boilerplate from boiler. note that this is permanent. '
-  echo '    - where BOILERPLATE_NAME is the name of your boilerplate in boiler'
-  line;
+            # if the user wants to specify an -s (script) to be run.
+            if getFlagArg('-s') != 'NULL':
+                os.system(' '.join([settings.EDITOR, settings.BOILERPLATESSCRIPTSDIR+'/'+installName+'.bash']))
+                os.system(' '.join(['chmod','+x',settings.BOILERPLATESSCRIPTSDIR+'/'+installName+'.bash']))
+            # copy the source to our boilerplate destination..
+            process =0
+            if os.path.isdir(sys.argv[2]):
+                process = os.system(" ".join(["cp","-r",sys.argv[2],settings.BOILERPLATESDIR+'/'+installName,settings.REDIRECTION]))
+            else:
+                process =os.system(" ".join(["cp",sys.argv[2],settings.BOILERPLATESDIR+'/'+installName,settings.REDIRECTION]))
+            if process == 0 :
+                print('installed '+ sys.argv[2]+ ' as '+installName )
+            else:
+                text('No such boilerplate source: '+sys.argv[2],'error')
+        else:
+            text('usage: install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME] [-i -s]','usage')
 
-  subheader 'add BOILERPLATE_NAME';
-  normal 'copies the BOILERPLATE_NAME boilerplate to the current working directory.'
-  echo '    - where BOILERPLATE_NAME is the name of your boilerplate in boiler'
-  line;
-  
-  subheader 'edit BOILERPLATE_NAME';
-  normal "edit the file of BOILERPLATE_NAME. Note that this can't be a directory."
 
-  # examples
-  line;
-  echo ''
-  header 'Examples:'
-  line;
-  ex 'boiler install ~/willysBinSrc/reactcomponents/reactbutton.js'
-  normal 'install a react button as a new boilerplate called react/button.'
- line; 
-  ex 'boiler ls'
-  normal 'list out boilerplates. In this case, you would see react/button.'
-  line;
-  ex 'boiler add react/button'
-  normal 'add a react/button boiler plate to current working directory.'
-  
-  # Footer
-  normal 'Made by Wilson Jusuf, Fearless Magicians.'
-}
-else 
-source "$ROOTDIR/settings.sh"
-# header,subheader,normal,usage,ex,line
-# note: $1 is the COMMAND, $2 is COMMAND ARG 1, $3 is COMMAND ARG2, etc..
-case "$1" in 
-  ("install")
-    if [[ $# -gt 1 ]]; 
-    then
-        arg="$3";
-        if [ $3 == '-n' -a $# -eq 4 ];
-          then
-            arg="$4";
-            echo 'got arg:'"$arg"
-          fi
-        if [[ -d "$2" ]]; # if is directory
-          then
-            cp -r "$2" "$BOILERPLATESDIR/$arg";
-         else
-            cp "$2" "$BOILERPLATESDIR/$arg"
-        fi
-      else
-        usage 'USAGE: boiler install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]';
-      fi
 
-    ;;
-  ("ls"|"list")
-    header "list of boilerplates:"
-    tree -L 1 "$BOILERPLATESDIR"
-    ;;
-  ("uninstall" | "rm")
-    if [[ $# -gt 1 ]];
-      then
-        if [[ -d "$BOILERPLATESDIR/$2" ]];
-          then
-            rm -rf "$BOILERPLATESDIR/$2" &> /dev/null || warning "$2 not found.";
-          else
-            rm "$BOILERPLATESDIR/$2"   &> /dev/null || warning "$2 not found.";
-        fi
-      else
-        usage 'USAGE: boiler uninstall BOILERPLATE_NAME';
-    fi
-    ;;
+    elif command == 'uninstall' or command == 'rm':
+        # TODO
+        if len(sys.argv) ==  3: # i.e if it is boiler install .....
+            # copy it.
+            if os.path.exists(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
+                if os.path.isdir(sys.argv[2]):
+                    os.system(" ".join(["rm","-rf",settings.BOILERPLATESDIR+'/'+sys.argv[2]]))
+                else:
+                    os.system(" ".join(["rm",settings.BOILERPLATESDIR+'/'+sys.argv[2]]))
+            else:
+                text("no such boilerplate: "+sys.argv[2],'error')
+                exit()
+            # rm script if exists.
+            if os.path.exists(settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash'):
+                 os.system(' '.join(['rm',settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash']))
+            # rm txt if exists.
+            if os.path.exists(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt'):
+                 os.system(' '.join(['rm',settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt']))
+            print(sys.argv[2]+' uninstalled successfully.')
+        else:
+            text('usage: boiler add BOILERPLATE_NAME','usage')
 
-  ("add")
-      if [[ $# -gt 1 ]];
-        then
-        if [[ -d "$2" ]]; # if is directory
-          then
-            cp -r  "$BOILERPLATESDIR/$2" . &> /dev/null || warning "$2 not found.";
-         else
-            cp "$BOILERPLATESDIR/$2" . &> /dev/null || warning  "$2 not found.";
-        fi
-      else
-        usage ' USAGE: boiler add BOILERPLATE_NAME';
-      fi
-  ;;
-  (*)
-    echo 'Unknown option. To see instructions, please run  ';
-    usage 'boiler';
-    exit;
-    ;;
-esac
 
-fi
+
+    elif command == 'add':
+        print('add')
+        if len(sys.argv) ==  3: # i.e if it is boiler install .....
+            # copy it.
+            if os.path.exists(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
+                if os.path.isdir(sys.argv[2]):
+                    os.system(" ".join(["cp","-r",settings.BOILERPLATESDIR+'/'+sys.argv[2],'.']))
+                else:
+                    os.system(" ".join(["cp",settings.BOILERPLATESDIR+'/'+sys.argv[2],'.']))
+            # run script if exists.
+            if os.path.exists(settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash'):
+                process = os.system(settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash')
+                if process != 0:
+                    text('init bash script is wrong. Please check '+settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash to fix.','error')
+            # cat the info txt for the boilerplate, if it exists.
+            if os.path.exists(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt'):
+                f = open(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt','r')
+                print(f.read())
+                f.close()
+        else:
+            text('usage: boiler add BOILERPLATE_NAME','usage')
+    elif command == 'ls' or command =='list':
+        text('list of boilerplates:','header')
+        os.system(' '.join(['tree','-L','1',settings.BOILERPLATESDIR]))
+    else:
+        text('Unknown option \''+command+'\'','error')
+        text('run \'boiler\' to see usage')
+
+        
+else:
+    #--------------          Print out the help text         ----------
+    text('usage: boiler COMMAND [COMMAND_OPTIONS]','usage')
+    text('a quick command-line tool to manage code boilerplates')
+    text('>>List of COMMANDs:<<','header')
+
+    # list out all commands.
+    text('ls','subheader')
+    text('List your boilerplates.')
+    text(separator())
+
+    text('install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME] [-i -s]','subheader')
+    text('Install a boilerplate to boiler to be reused.')
+    text('    - where PATH/TO/YOUR/BOILERPLATE is the directory, or code, of your boilerplate')
+    text('    - where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be "directorial"')
+    text('Flags:')
+    text('    -i : specify information for usage (you will edit this using EDITOR)')
+    text('    -s : specify scripts to be run for usage (you will edit this using EDITOR)')
+    text(separator())
+    text('uninstall BOILERPLATE_NAME','subheader')
+    text('remove a boilerplate from boiler. note that this is permanent.')
+    text('    - where BOILERPLATE_NAME is the name of your boilerplate in boiler')
+    text(separator())
+    text('add BOILERPLATE_NAME','subheader')
+    text('copies the BOILERPLATE_NAME boilerplate to the current working directory.')
+    text('    - where BOILERPLATE_NAME is the name of your boilerplate in boiler')
+    text(separator())
+    text('edit BOILERPLATE_NAME','subheader')
+    text('edit the file of BOILERPLATE_NAME. Note that this can\'t be a directory.')
+    text(separator())
+    print('')
+    # list out examples.
+    text('>>Examples:<<','header')
+    text('$ boiler install ~/willysBinSrc/reactcomponents/reactbutton.js','ex')
+    text('install a react button as a new boilerplate called react/button.')
+    text(separator())
+    text('$ boiler ls','ex')
+    text('list out boilerplates. In this case, you would see react/button.')
+    text(separator())
+    text('$ boiler add react/button','ex')
+    text('add a react/button boiler plate to current working directory.')
+    print('')
+    text('Made by Wilson Jusuf, Fearless Magicians.')
+
