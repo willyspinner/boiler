@@ -18,10 +18,13 @@ List your boilerplates.
 ```sh
 install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]
 ```
-Install a boilerplate to boiler to be reused .
-    - where PATH/TO/YOUR/BOILERPLAtE is the directory, or code, of your boilerplate
+Install a boilerplate to boiler to be reused.
+    - where PATH/TO/YOUR/BOILERPLATE is the directory, or code, of your boilerplate
     - where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be "directorial"
-
+Flags:
+    -i : specify information for usage (you will edit this using EDITOR)
+    -s : specify scripts to be run for usage (you will edit this using EDITOR)
+    
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
 ```sh
