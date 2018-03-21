@@ -92,3 +92,7 @@ brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
 # TODO:
 - [ ] Support for boilerplates with dependencies ,i.e. npm scripts, yarn, brew, etc. (currently only has rigid support for single-file boilerplates / whole directory boilerplates.
 - [ ] automated version control
+# Done:
+- [x] Support for running init scripts every time boilerplate is added (e.g. npm install dependencies ... etc)
+- [x] Support for catting txt info files that outline the usage of the boilerplate every time the `add` command is run.
+
