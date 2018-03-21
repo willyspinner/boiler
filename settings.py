@@ -8,5 +8,5 @@ EDITOR='vi'
 BOILERPLATESSCRIPTSDIR='/Users/willyspinner/willysBin/boiler_project/boilerplatesrunscripts'
 # directory of boiler plate info.txt files
 BOILERPLATESINFODIR='/Users/willyspinner/willysBin/boiler_project/boilerplatesinfo'
-# bash redirection for any system shell calls.
+# bash stderr stdout redirection for any system shell calls.
 REDIRECTION='> /dev/null 2>&1'

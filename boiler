@@ -1,27 +1,14 @@
 #!/usr/bin/env python3
-from termcolor import colored, cprint
-import os
 import sys
-import subprocess
 ROOTDIR='/Users/willyspinner/willysBin/boiler_project'
-from utils.helpers import text, separator
+from utils.helpers import text, separator,getFlagArg
 sys.path.append(ROOTDIR)
 import settings
 
-# helper functions:
-def getFlagArg(flag):
-    """
-    see if a flag exists, and if so get its value, otherwise return NULL
-    """
-    for i in range(2,len(sys.argv)):
-        if sys.argv[i] == flag:
-            if i == len(sys.argv) -1:
-                return 'FLAG_FOUND_LAST'
-            return sys.argv[i + 1]
-    return 'NULL'
 # recall that sys.argv is an array where [0] : script name, [1] command verb ... 
 #[N] Nth arg.
 if len(sys.argv) > 1:
+    import os
     command=sys.argv[1]
     if command == 'install':
         if len(sys.argv) > 2: # i.e if it is boiler install .....
@@ -46,7 +33,7 @@ if len(sys.argv) > 1:
             else:
                 process =os.system(" ".join(["cp",sys.argv[2],settings.BOILERPLATESDIR+'/'+installName,settings.REDIRECTION]))
             if process == 0 :
-                print('installed '+ sys.argv[2]+ ' as '+installName )
+                text('installed '+ sys.argv[2]+ ' as '+installName,'notif')
             else:
                 text('No such boilerplate source: '+sys.argv[2],'error')
         else:
@@ -55,11 +42,10 @@ if len(sys.argv) > 1:
 
 
     elif command == 'uninstall' or command == 'rm':
-        # TODO
         if len(sys.argv) ==  3: # i.e if it is boiler install .....
             # copy it.
-            if os.path.exists(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
-                if os.path.isdir(sys.argv[2]):
+            if os.path.exists(settings.BOILERPLATESDIR+'/' + sys.argv[2]):
+                if os.path.isdir(settings.BOILERPLATESDIR+'/' + sys.argv[2]):
                     os.system(" ".join(["rm","-rf",settings.BOILERPLATESDIR+'/'+sys.argv[2]]))
                 else:
                     os.system(" ".join(["rm",settings.BOILERPLATESDIR+'/'+sys.argv[2]]))
@@ -72,41 +58,80 @@ if len(sys.argv) > 1:
             # rm txt if exists.
             if os.path.exists(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt'):
                  os.system(' '.join(['rm',settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt']))
-            print(sys.argv[2]+' uninstalled successfully.')
+            text(sys.argv[2] + ' uninstalled successfully. ','notif')
         else:
             text('usage: boiler add BOILERPLATE_NAME','usage')
 
 
 
     elif command == 'add':
-        print('add')
         if len(sys.argv) ==  3: # i.e if it is boiler install .....
             # copy it.
             if os.path.exists(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
-                if os.path.isdir(sys.argv[2]):
+                if os.path.isdir(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
                     os.system(" ".join(["cp","-r",settings.BOILERPLATESDIR+'/'+sys.argv[2],'.']))
                 else:
                     os.system(" ".join(["cp",settings.BOILERPLATESDIR+'/'+sys.argv[2],'.']))
+            else:
+                text('boilerplate '+sys.argv[2]+' does not exist.','error')
+                exit()
             # run script if exists.
             if os.path.exists(settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash'):
                 process = os.system(settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash')
                 if process != 0:
                     text('init bash script is wrong. Please check '+settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash to fix.','error')
+                else:
+                    text('init bash script '+sys.argv[2]+'.bash ran sucessfully.','notif')
             # cat the info txt for the boilerplate, if it exists.
             if os.path.exists(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt'):
+                text('txt information for boilerplate: '+sys.argv[2],'notif')
                 f = open(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt','r')
                 print(f.read())
                 f.close()
         else:
             text('usage: boiler add BOILERPLATE_NAME','usage')
+
+
+
     elif command == 'ls' or command =='list':
         text('list of boilerplates:','header')
         os.system(' '.join(['tree','-L','1',settings.BOILERPLATESDIR]))
+
+
+    elif command =='edit' or command == 'e':
+        if len(sys.argv) >= 3:
+            if os.path.exists(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
+                pickedFlag=False
+                # if the user wants to edit -i (info) 
+                if getFlagArg('-i') != 'NULL':
+                    pickedFlag = True
+                    os.system(' '.join([settings.EDITOR, settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt']))
+                # if the user wants to edit -s (script) 
+                if getFlagArg('-s') != 'NULL':
+                    pickedFlag = True
+                    os.system(' '.join([settings.EDITOR, settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash']))
+                    os.system(' '.join(['chmod','+x',settings.BOILERPLATESSCRIPTSDIR+'/'+sys.argv[2]+'.bash']))
+                if not pickedFlag:
+                    if not os.path.isdir(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
+                        os.system(' '.join([settings.EDITOR,settings.BOILERPLATESDIR+'/'+sys.argv[2]]))
+                    else:
+                        text('Couldn\'t edit directory boilerplates. Working on this feature though!','error')
+        else:
+            text('Usage: boiler edit BOILERPLATE_NAME','usage')
+
+    elif command =='rename':
+        if len(sys.argv) == 4:
+            if os.path.exists(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
+                os.system(' '.join(['mv',settings.BOILERPLATESDIR+'/'+sys.argv[2], settings.BOILERPLATESDIR+'/'+sys.argv[3]]))
+                text('renamed '+sys.argv[2]+' to '+sys.argv[3],'notif')
+        else:
+            text('Usage: boiler rename BOILERPLATE_NAME NEW_BOILERPLATE_NAME','usage')
+
+
     else:
-        text('Unknown option \''+command+'\'','error')
+        text('Unknown command \''+command+'\'','error')
         text('run \'boiler\' to see usage')
 
-        
 else:
     #--------------          Print out the help text         ----------
     text('usage: boiler COMMAND [COMMAND_OPTIONS]','usage')
@@ -134,8 +159,15 @@ else:
     text('copies the BOILERPLATE_NAME boilerplate to the current working directory.')
     text('    - where BOILERPLATE_NAME is the name of your boilerplate in boiler')
     text(separator())
-    text('edit BOILERPLATE_NAME','subheader')
+    text('edit BOILERPLATE_NAME [-i -s]','subheader')
     text('edit the file of BOILERPLATE_NAME. Note that this can\'t be a directory.')
+    text('    - if -i is specified, edits the boilerplate\'s information txt file instead.')
+    text('    - if -s is specified, edits the boilerplate\'s init bash script file instead.')
+
+
+    text(separator())
+    text('rename BOILERPLATE_NAME','subheader')
+    text('rename the file of BOILERPLATE_NAME.')
     text(separator())
     print('')
     # list out examples.
