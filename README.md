@@ -18,16 +18,15 @@ List your boilerplates.
 ```sh
 install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]
 ```
+
 Install a boilerplate to boiler to be reused.
 
-    - where PATH/TO/YOUR/BOILERPLATE is the directory, or code, of your boilerplate
-    
-    - where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be "directorial"
+- where PATH/TO/YOUR/BOILERPLATE is the directory, or code, of your boilerplate.
+- where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be a whole directory.
     
 Flags:
 
     -i : specify information for usage (you will edit this using EDITOR)
-    
     -s : specify scripts to be run for usage (you will edit this using EDITOR)
     
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
@@ -36,7 +35,8 @@ Flags:
 uninstall BOILERPLATE_NAME
 ```
 remove a boilerplate from boiler. note that this is permanent.
-    - where BOILERPLATE_NAME is the name of your boilerplate in boiler
+
+- where BOILERPLATE_NAME is the name of your boilerplate in boiler
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -44,7 +44,8 @@ remove a boilerplate from boiler. note that this is permanent.
 add BOILERPLATE_NAME
 ```
 copies the BOILERPLATE_NAME boilerplate to the current working directory.
-    - where BOILERPLATE_NAME is the name of your boilerplate in boiler
+
+- where BOILERPLATE_NAME is the name of your boilerplate in boiler
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
