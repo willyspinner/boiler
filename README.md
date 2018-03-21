@@ -18,17 +18,25 @@ List your boilerplates.
 ```sh
 install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]
 ```
-Install a boilerplate to boiler to be reused .
-    - where PATH/TO/YOUR/BOILERPLAtE is the directory, or code, of your boilerplate
-    - where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be "directorial"
 
+Install a boilerplate to boiler to be reused.
+
+- where PATH/TO/YOUR/BOILERPLATE is the directory, or code, of your boilerplate.
+- where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be a whole directory.
+    
+Flags:
+
+    -i : specify information for usage (you will edit this using EDITOR)
+    -s : specify scripts to be run for usage (you will edit this using EDITOR)
+    
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
 ```sh
 uninstall BOILERPLATE_NAME
 ```
 remove a boilerplate from boiler. note that this is permanent.
-    - where BOILERPLATE_NAME is the name of your boilerplate in boiler
+
+- where BOILERPLATE_NAME is the name of your boilerplate in boiler
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -36,7 +44,8 @@ remove a boilerplate from boiler. note that this is permanent.
 add BOILERPLATE_NAME
 ```
 copies the BOILERPLATE_NAME boilerplate to the current working directory.
-    - where BOILERPLATE_NAME is the name of your boilerplate in boiler
+
+- where BOILERPLATE_NAME is the name of your boilerplate in boiler
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -83,3 +92,7 @@ brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
 # TODO:
 - [ ] Support for boilerplates with dependencies ,i.e. npm scripts, yarn, brew, etc. (currently only has rigid support for single-file boilerplates / whole directory boilerplates.
 - [ ] automated version control
+# Done:
+- [x] Support for running init scripts every time boilerplate is added (e.g. npm install dependencies ... etc)
+- [x] Support for catting txt info files that outline the usage of the boilerplate every time the `add` command is run.
+
