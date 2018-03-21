@@ -147,8 +147,10 @@ else:
     text('>>List of COMMANDs:<<','header')
 
     # list out all commands.
-    text('ls','subheader')
+    text('ls [-v]','subheader')
     text('List your boilerplates.')
+    text('Flags:')
+    text('    -v : verbose mode: show the info txt descriptions for each boilerplate.')
     text(separator())
     text('add BOILERPLATE_NAME','subheader')
     text('copies the BOILERPLATE_NAME boilerplate to the current working directory.')
