@@ -94,6 +94,7 @@ if len(sys.argv) > 1:
                 f = open(settings.BOILERPLATESINFODIR+'/'+sys.argv[2]+'.txt','r')
                 print(f.read())
                 f.close()
+            text(' successfully added '+sys.argv[2],'notif')
         else:
             text('usage: boiler add BOILERPLATE_NAME','usage')
 
@@ -122,6 +123,7 @@ if len(sys.argv) > 1:
                 if not pickedFlag:
                     if not os.path.isdir(settings.BOILERPLATESDIR+'/'+sys.argv[2]):
                         os.system(' '.join([settings.EDITOR,settings.BOILERPLATESDIR+'/'+sys.argv[2]]))
+                        text('Edited boilerplate '+sys.argv[2],'notif')
                     else:
                         text('Couldn\'t edit directory boilerplates. Working on this feature though!','error')
         else:
