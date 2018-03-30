@@ -126,6 +126,8 @@ if len(sys.argv) > 1:
                         text('Edited boilerplate '+sys.argv[2],'notif')
                     else:
                         text('Couldn\'t edit directory boilerplates. Working on this feature though!','error')
+            else:
+                text('boilerplate called \''+sys.argv[2]+'\' not found.','error')
         else:
             text('Usage: boiler edit BOILERPLATE_NAME','usage')
 
