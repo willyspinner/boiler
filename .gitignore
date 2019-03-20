@@ -2,3 +2,4 @@ boilerplates
 boilerplatesinfo
 boilerplatesrunscripts
 *.pyc
+__pycache__

@@ -105,8 +105,9 @@ brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
     - [ ] nodejs web server (single file)
  - [ ] DISABLE init scripts - this really is not needed - let the client do it by him/herself.
 - default command should print out the boilerplate to stdout. Add -o FILENAME file to save to FILENAME.
-- [ ] Don't use the bash `tree`! 
-- [ ] Makefile for installation
+- [ ] Don't use the bash `tree`!
+- [ ] Makefile for installation.
+- [ ] Possibly move to C++ to bundle everything into one, instead of python.
 
 # Done:
 - [x] Support for running init scripts every time boilerplate is added (e.g. npm install dependencies ... etc)
