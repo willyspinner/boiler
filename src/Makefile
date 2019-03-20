@@ -1,0 +1,27 @@
+CC=g++
+default: boiler
+
+# main boiler file.
+boiler: boiler.o input.o printutils.o configfile.o
+	CC boiler.o input.o printutils.o configfile.o -o boiler
+
+# object files:
+boiler.o: boiler.cc
+	CC -c boiler.cc -o boiler.o
+
+input.o: input.h input.cc
+	CC -c input.cc -o input.o
+
+printutils.o: printutils.h printutils.cc
+	CC -c printutils.cc -o printutils.o
+
+configfile.o: configfile.cc configfile.h
+	CC -c configfile.cc -o configfile.o
+
+# make install:
+install:
+	echo "TODO: install"
+
+clean: 
+	rm *.o boiler
+
