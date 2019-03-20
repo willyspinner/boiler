@@ -78,7 +78,7 @@ list out boilerplates. In this case, you would see react/button.
 $ boiler add react/button
 ```
 add a react/button boiler plate to current working directory.
-> Made by Wilson Jusuf, Fearless Magicians.
+> Made by Wilson Jusuf.
 
 # requirements:
 * tree 
@@ -90,8 +90,24 @@ brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
 ```
 
 # TODO:
-- [ ] Support for boilerplates with dependencies ,i.e. npm scripts, yarn, brew, etc. (currently only has rigid support for single-file boilerplates / whole directory boilerplates.
-- [ ] automated version control
+- [ ] revamp whole interface - keep data in json file (json file), directory.
+    -  Data like:
+        - installed boilerplates location and names
+        - boiler plate names, etc.
+    - use shell env `BOILERDIR` as location for all the boilerplate stuff.
+        - if `BOILERDIR` not set, then prompt our user to set it first.
+    - put default stuff.
+- [ ] add configs for:
+    - [ ] nginx-http (single file)
+    - [ ] nginx-https (single file)
+    - [ ] systemd .service conf (single file)
+    - [ ] golang web server (single file)
+    - [ ] nodejs web server (single file)
+ - [ ] DISABLE init scripts - this really is not needed - let the client do it by him/herself.
+- default command should print out the boilerplate to stdout. Add -o FILENAME file to save to FILENAME.
+- [ ] Don't use the bash `tree`! 
+- [ ] Makefile for installation
+
 # Done:
 - [x] Support for running init scripts every time boilerplate is added (e.g. npm install dependencies ... etc)
 - [x] Support for catting txt info files that outline the usage of the boilerplate every time the `add` command is run.
