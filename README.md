@@ -26,8 +26,7 @@ Install a boilerplate to boiler to be reused.
     
 Flags:
 
-    -i : specify information for usage (you will edit this using EDITOR)
-    -s : specify scripts to be run for usage (you will edit this using EDITOR)
+    -i : specify information new boilerplate (you will edit this using EDITOR)
     
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -41,18 +40,16 @@ remove a boilerplate from boiler. note that this is permanent.
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
 ```sh
-add BOILERPLATE_NAME
+show BOILERPLATE_NAME
 ```
-copies the BOILERPLATE_NAME boilerplate to the current working directory.
-
-- where BOILERPLATE_NAME is the name of your boilerplate in boiler
+cat the boilerplate to stdout.
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
 ```sh
 edit BOILERPLATE_NAME
 ```
-edit the file of BOILERPLATE_NAME. Note that this can't be a directory.
+edit the file of BOILERPLATE_NAME using editor `VISUAL`.
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -63,7 +60,7 @@ edit the file of BOILERPLATE_NAME. Note that this can't be a directory.
 ```sh
 $ boiler install ~/willysBinSrc/reactcomponents/reactbutton.js
 ```
-install a react button as a new boilerplate called react/button.
+install a react button as a new boilerplate called reactbutton.js
 
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
@@ -75,19 +72,14 @@ list out boilerplates. In this case, you would see react/button.
 \-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
 
 ```sh
-$ boiler add react/button
+$ boiler show reactbutton.js
 ```
-add a react/button boiler plate to current working directory.
+see reactbutton.js boilerplate.
+
 > Made by Wilson Jusuf.
 
 # requirements:
-* tree 
-
-To get this, simply: 
-
-```sh
-brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
-```
+g++ / clang++ with c++11 support.
 
 # TODO:
 - [ ] revamp whole interface - keep data in json file (json file), directory.
@@ -105,9 +97,9 @@ brew install tree || sudo apt-get install tree # for mac or ubuntu respectively.
     - [ ] nodejs web server (single file)
  - [ ] DISABLE init scripts - this really is not needed - let the client do it by him/herself.
 - default command should print out the boilerplate to stdout. Add -o FILENAME file to save to FILENAME.
-- [ ] Don't use the bash `tree`!
-- [ ] Makefile for installation.
-- [ ] Possibly move to C++ to bundle everything into one, instead of python.
+- [x] Don't use the bash `tree`!
+- [x] Makefile for installation.
+- [x] Possibly move to C++ to bundle everything into one, instead of python.
 
 # Done:
 - [x] Support for running init scripts every time boilerplate is added (e.g. npm install dependencies ... etc)
