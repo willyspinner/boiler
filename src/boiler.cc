@@ -289,7 +289,7 @@ int main (int argc, char* argv[]) {
         bool contents_saved = cfg_file.save_contents();
         if (!contents_saved) {
             unlink(destination.c_str());
-            printutils::print_error("Error in hard-linking %s: %s\n", boilerplate_file, strerror(errno));
+            printutils::print_error("Error in saving %s: %s\n", boilerplate_file, strerror(errno));
             return EXIT_SYSCALL_FAILURE;
         }
         printf("boilerplate \"%s\" saved!\n", new_name.c_str());

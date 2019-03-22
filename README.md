@@ -21,6 +21,7 @@ NOTE: boiler will copy the boilerplate in `PATH/TO/BOILERPLATE` to `BOILERDIR/bo
 1. (default) copy
 2. soft link (-s or --soft)
 3. hard link (-h or --hard)
+WARNING: as of now, we **cannot hardlink** to `boilerconfig.json`. Changes to boilerconfig.json will be saved atomically. To achieve this, we use the `rename()` system call to rename a temporary file we're writing to to `boilerconfig.json`. This means that its inode will always change.
 
 ### uninstall a boilerplate
 

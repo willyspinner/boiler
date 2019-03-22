@@ -67,7 +67,6 @@ bool ConfigFile::remove_boiler_item (std::string& boilerplate_name) {
         }
         pos++;
     }
-
     return false;
 }
 
@@ -86,10 +85,12 @@ bool ConfigFile::save_contents() { // save to BOILERDIR/boilerconfig.json
     }
 
     if(write(temp_fd, json_str, json_str_len) == -1) {
+        close(temp_fd);
         unlink(temp_filepath);
         // could not write/
         return false;
     }
+    close(temp_fd);
     // below is atomic, so it is fine.
    if(rename(temp_filepath, m_boiler_conf_filepath) == -1) {
         unlink(temp_filepath);
