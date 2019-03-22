@@ -1,5 +1,6 @@
 #include "printutils.h"
 #include <iostream>
+#include "configfile.h"
 /* FOREGROUND */
 #define RESET  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -13,10 +14,10 @@
 #define UNDL "\x1B[4m"
 #define BOLD "\x1B[1m"
 // print each boilerplate entry. name, location, description.
-void printutils::print_boilerplate_entry(const char* name, const char* boilerpath, const char* description) {
-    std::cout << UNDL << BOLD<< KCYN<< "- "<<name << RESET <<std::endl;
-    std::cout << BOLD << ("Location: ")<< RESET << boilerpath<<std::endl;
-    std::cout << description<<std::endl;
+void printutils::print_boilerplate_entry(const boiler_item& bti) {
+    std::cout << UNDL << BOLD<< KCYN<< "- "<<bti.name << RESET <<std::endl;
+    std::cout << BOLD << ("Location: ")<< RESET << bti.boilerpath<<std::endl;
+    std::cout << bti.description<<std::endl;
     std::cout << std::endl;
 }
 
@@ -29,7 +30,16 @@ void printutils::print_usage() {
 // checks if is an actual command. If it is, print usage of it, and return true.
 bool printutils:: print_command_usage(char const* cmd) {
     //TODO: print command usage.
-    printf("%s: TODO\n", cmd);
+        printutils::print_header("%s command:\n", cmd);
+    if (strcmp(cmd, "show") == 0 ) {
+        printf("USAGE: boiler show BOILERPLATE_NAME\n");
+    } else if (strcmp(cmd, "install") == 0 ){
+        printf("USAGE: boiler install PATH/TO/BOILERPLATE [-n BOILERPLATE_NAME] [ -d BOILERPLATE_DESCRIPTION] [-s,--soft or -h, --hard]\n");
+    } else if (strcmp(cmd, "uninstall") == 0 ){
+        printf("USAGE: boiler uninstall BOILERPLATE_NAME [-x] \n");
+    } else if (strcmp(cmd, "edit") == 0 ){
+        printf("USAGE: boiler edit BOILERPLATE_NAME\n");
+    }     
     return true;
 }
  

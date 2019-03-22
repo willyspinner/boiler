@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include <string>
 #include <errno.h>
+#include <streambuf>
+#include <fstream>
 
 ConfigFile::~ConfigFile() {
 
@@ -20,28 +22,16 @@ ConfigFile::ConfigFile() {
 ConfigFile::ConfigFile(char* boiler_conf_filepath, bool is_first_time) throw (std::runtime_error) {
     if( is_first_time ) {
         m_configfile_json = {
-            { "boilerplates", {}}
+            { "boilerplates",nlohmann::json::array({})}
         };
         return;
     }
     // open boiler_conf_filepath.
-    int conf_fd;
     m_boiler_conf_filepath = boiler_conf_filepath;
-    if((conf_fd = open(m_boiler_conf_filepath, O_RDONLY)) == -1) {
-        printf("not found ting\n");
-        throw std::runtime_error(strerror(errno));
-    }
-    struct stat st;
-    if(stat(m_boiler_conf_filepath, &st) == -1) {
-        throw std::runtime_error(strerror(errno));
-    }
-    size_t size = st.st_size;
-    char configfile_str[st.st_size];
-    if(read(conf_fd, configfile_str, size) == -1) {
-        throw std::runtime_error(strerror(errno));
-    }
-    close(conf_fd);
-    m_configfile_json = nlohmann::json::parse(configfile_str, nullptr, false);
+    std::ifstream t(m_boiler_conf_filepath);
+    std::string str((std::istreambuf_iterator<char>(t)),
+        std::istreambuf_iterator<char>());
+    m_configfile_json = nlohmann::json::parse(str, nullptr, false);
     if (m_configfile_json.is_discarded()) {
         errno =EFTYPE;
         throw std::runtime_error("Invalid json.");
@@ -49,17 +39,42 @@ ConfigFile::ConfigFile(char* boiler_conf_filepath, bool is_first_time) throw (st
 }
 
 
-void ConfigFile::add_boiler_item (boiler_item& bi) {
+bool ConfigFile::add_boiler_item (const boiler_item& bi) {
+    // first, check if already present.
+    auto& boilerplates = m_configfile_json["boilerplates"];
+    for(auto& boilerplate: boilerplates) {
+        if(boilerplate["name"].get<std::string>().compare(std::string(bi.name)) == 0) {
+            //already exists.
+            return false;
+        }
+    }
     m_configfile_json["boilerplates"].push_back({
         {"name", bi.name},
         {"description", bi.description},
         {"boilerpath", bi.boilerpath},
     });
+    return true;
+}
+// if found and able to be removed, return true. Else false.
+bool ConfigFile::remove_boiler_item (std::string& boilerplate_name) {
+    auto& boilerplates = m_configfile_json["boilerplates"];
+    int pos = 0;
+    for(auto& boilerplate: boilerplates) {
+        if(boilerplate["name"].get<std::string>().compare(boilerplate_name) == 0) {
+            //already exists.
+            boilerplates.erase(pos);
+            return true;
+        }
+        pos++;
+    }
+
+    return false;
 }
 
 bool ConfigFile::save_contents() { // save to BOILERDIR/boilerconfig.json
    // stringify json and save the file. 
    char* json_str = (char* ) m_configfile_json.dump().c_str();
+   fprintf(stderr, "DEBUG: dumping json: %s\n", json_str);
    int json_str_len = strlen(json_str);
 
     // put stuff to swapfile first.

@@ -1,80 +1,46 @@
-A quick command line tool for storing boilerplate code files.
+A quick command line tool for storing boilerplate code files, configurations (e.g. systemd, nginx), etc.
+We all forget them too easily sometimes.
 
 usage: 
 ```sh
 boiler COMMAND [COMMAND_OPTIONS]
 ```
-# List of COMMANDs:
+# List of COMMANDS:
 
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-
+### List your boilerplates.
 ```sh
-ls
-```
-List your boilerplates.
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-
-```sh
-install PATH/TO/YOUR/BOILERPLATE [-n BOILERPLATE_NAME]
+list (or ls)
 ```
 
-Install a boilerplate to boiler to be reused.
 
-- where PATH/TO/YOUR/BOILERPLATE is the directory, or code, of your boilerplate.
-- where BOILERPLATE_NAME is the optional name of your boilerplate in boiler, can be a whole directory.
-    
-Flags:
+### install a new boilerplate.
+```sh
+install PATH/TO/BOILERPLATE [-n BOILERPLATE_NAME] [ -d BOILERPLATE_DESCRIPTION] [-s,--soft or -h, --hard]
+```
+NOTE: boiler will copy the boilerplate in `PATH/TO/BOILERPLATE` to `BOILERDIR/boilerplates`.  There are 3 ways to do this:
+1. (default) copy
+2. soft link (-s or --soft)
+3. hard link (-h or --hard)
 
-    -i : specify information new boilerplate (you will edit this using EDITOR)
-    
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+### uninstall a boilerplate
 
 ```sh
-uninstall BOILERPLATE_NAME
+uninstall BOILERPLATE_NAME [-x]
+# NOTE: the -x flag actually removes the boilerplate from the BOILERDIR/boilerplates directory.
 ```
-remove a boilerplate from boiler. note that this is permanent.
 
-- where BOILERPLATE_NAME is the name of your boilerplate in boiler
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+### See a boilerplate to stdout
 
 ```sh
 show BOILERPLATE_NAME
 ```
-cat the boilerplate to stdout.
 
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+### edit a boilerplate
 
 ```sh
 edit BOILERPLATE_NAME
+# edit the file of BOILERPLATE_NAME using editor `VISUAL`.
 ```
-edit the file of BOILERPLATE_NAME using editor `VISUAL`.
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-
-# Examples:
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-
-```sh
-$ boiler install ~/willysBinSrc/reactcomponents/reactbutton.js
-```
-install a react button as a new boilerplate called reactbutton.js
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-
-```sh
-$ boiler ls
-```
-list out boilerplates. In this case, you would see react/button.
-
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
-
-```sh
-$ boiler show reactbutton.js
-```
-see reactbutton.js boilerplate.
 
 > Made by Wilson Jusuf.
 # boilerconfig.json:
@@ -90,11 +56,13 @@ This will host all the configuration and location of all the boilerplates.
     ],
 }
 ```
-# requirements:
-g++ / clang++ with c++11 support.
+# requirements to build from source:
+g++ / clang++ with c++11 support
+nlohmann/json C++ json library
+
 
 # TODO:
-- [ ] revamp whole interface - keep data in json file (json file), directory.
+- [x] revamp whole interface - keep data in json file (json file), directory.
     -  Data like:
         - installed boilerplates location and names
         - boiler plate names, etc.
@@ -102,7 +70,7 @@ g++ / clang++ with c++11 support.
         - if `BOILERDIR` not set, then prompt our user to set it first.
     - put default stuff.
 - [ ] add configs for:
-    - [ ] nginx-http (single file)
+    - [x] nginx-http (single file)
     - [ ] nginx-https (single file)
     - [ ] systemd .service conf (single file)
     - [ ] golang web server (single file)

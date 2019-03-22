@@ -5,7 +5,7 @@
 namespace printutils {
 
     // print each boilerplate entry. name, location, description.
-    void print_boilerplate_entry(const char* name, const char* boilerpath, const char* description);
+    void print_boilerplate_entry(const boiler_item& bti);
 
     void print_usage();
 

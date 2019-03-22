@@ -4,11 +4,12 @@
 #include <vector>
 #include <stdexcept>
 #include <nlohmann/json.hpp>
+#include <string>
 
 typedef struct {
-    char* name; // name of boilerplate item.
-    char* description; // description of the boilerplate.
-    char* boilerpath; // location relative to $BOILERDIR/boilerplates.
+    std::string name; // name of boilerplate item.
+    std::string description; // description of the boilerplate.
+    std::string boilerpath; // location relative to $BOILERDIR/boilerplates.
 } boiler_item;
 
 class ConfigFile {
@@ -19,7 +20,8 @@ class ConfigFile {
         // ^ should throw exception if not possible.
         ~ConfigFile(); // don't forget to call this!
 
-        void add_boiler_item (boiler_item& bi);
+        bool add_boiler_item (const boiler_item& bi);
+        bool remove_boiler_item (std::string& boilerplate_name);
         nlohmann::json* get_json() ;
         bool save_contents(); // save to BOILERDIR/boiler.conf
     private:

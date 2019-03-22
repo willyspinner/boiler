@@ -17,10 +17,10 @@ bool input::prompt_bool_answer(char const* question) {
     }
 }
 
-/* won't accept a "" as an answer. NOTE: this will dynamically allocate the string. */
-char* input::prompt_string_answer(char const* question) {
+/* won't accept a "" as an answer. */
+std::string input::prompt_string_answer(char const* question) {
         printutils::print_prompt("%s", question);
         std::string answer;
         std::getline(std::cin, answer);
-        return strdup(answer.c_str());
+        return answer;
 }
