@@ -188,12 +188,16 @@ int main (int argc, char* argv[]) {
                     printutils::print_error("Error in accessing %s: %s",whole_path.c_str(), strerror(errno));
                     return EXIT_FAILURE;
                 }
-                std::string visual(getenv("VISUAL"));
-                if (visual.empty()) {
+                //std::string visual(getenv("VISUAL"));
+                std::string visual;
+                char *visual_cstr = getenv("VISUAL");
+                if (visual_cstr == NULL) {
                     visual = input::prompt_string_answer("VISUAL is not defined. Please input your desired text editor to edit the boilerplate: ");
+                } else {
+                    visual = std::string(visual_cstr);
                 }
                 execlp(visual.c_str(), visual.c_str(), whole_path.c_str(), NULL);
-                printutils::print_error("Error in editing with %s: %s", visual.c_str(), strerror(errno));
+                printutils::print_error("Error: program %s %s", visual.c_str(), strerror(errno));
                 return EXIT_SYSCALL_FAILURE;
             }
         }

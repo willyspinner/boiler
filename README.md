@@ -17,20 +17,21 @@ list (or ls)
 ```sh
 install PATH/TO/BOILERPLATE [-n BOILERPLATE_NAME] [ -d BOILERPLATE_DESCRIPTION] [-s,--soft or -h, --hard]
 ```
-NOTE: boiler will copy the boilerplate in `PATH/TO/BOILERPLATE` to `BOILERDIR/boilerplates`.  There are 3 ways to do this:
+`boiler` will copy the boilerplate in `PATH/TO/BOILERPLATE` to `BOILERDIR/boilerplates`.  There are 3 ways to do this:
 1. (default) copy
 2. soft link (-s or --soft)
 3. hard link (-h or --hard)
+
 WARNING: as of now, we **cannot hardlink** to `boilerconfig.json`. Changes to boilerconfig.json will be saved atomically. To achieve this, we use the `rename()` system call to rename a temporary file we're writing to to `boilerconfig.json`. This means that its inode will always change.
 
 ### uninstall a boilerplate
 
 ```sh
 uninstall BOILERPLATE_NAME [-x]
-# NOTE: the -x flag actually removes the boilerplate from the BOILERDIR/boilerplates directory.
+# NOTE: use the -x flag to actually remove the boilerplate from the BOILERDIR/boilerplates directory. 
 ```
 
-### See a boilerplate to stdout
+### print a boilerplate to stdout
 
 ```sh
 show BOILERPLATE_NAME
