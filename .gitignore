@@ -3,3 +3,4 @@ boilerplatesinfo
 boilerplatesrunscripts
 *.pyc
 __pycache__
+.vscode

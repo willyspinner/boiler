@@ -77,7 +77,19 @@ $ boiler show reactbutton.js
 see reactbutton.js boilerplate.
 
 > Made by Wilson Jusuf.
-
+# boilerconfig.json:
+This will host all the configuration and location of all the boilerplates.
+```json
+{
+    "boilerplates": [
+        {
+            "name": "name of boilerplate item.",
+            "description": "description of the boilerplate",
+            "boilerpath": "location relative to $BOILERDIR/boilerplates"
+        }, ...
+    ],
+}
+```
 # requirements:
 g++ / clang++ with c++11 support.
 

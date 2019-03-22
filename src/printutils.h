@@ -5,7 +5,7 @@
 namespace printutils {
 
     // print each boilerplate entry. name, location, description.
-    void print_boilerplate_entry(configfile::boiler_item& bpl);
+    void print_boilerplate_entry(const char* name, const char* boilerpath, const char* description);
 
     void print_usage();
 
@@ -14,6 +14,11 @@ namespace printutils {
 
     // prints error to stderrr.
     void print_error(char const* fmt, ...);
+
+    void print_prompt(char const* fmt, ...);
+
+    void print_header(char const* fmt, ...);
+
 }
 
 #endif
