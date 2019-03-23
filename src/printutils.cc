@@ -1,6 +1,7 @@
 #include "printutils.h"
 #include <iostream>
 #include "configfile.h"
+#include <cstdarg>
 /* FOREGROUND */
 #define RESET  "\x1B[0m"
 #define KRED  "\x1B[31m"
@@ -10,6 +11,7 @@
 #define KMAG  "\x1B[35m"
 #define KCYN  "\x1B[36m"
 #define KWHT  "\x1B[37m"
+
 
 #define UNDL "\x1B[4m"
 #define BOLD "\x1B[1m"

@@ -2,7 +2,6 @@
 #define CONFIGFILE_H
 #include <iostream>
 #include <vector>
-#include <stdexcept>
 #include "nlohmann_json/single_include/nlohmann/json.hpp"
 #include <string>
 typedef struct {
@@ -15,7 +14,9 @@ class ConfigFile {
     public:
         // constructors.
         ConfigFile();
-        ConfigFile(char* boiler_conf_filepath, bool is_first_time = false) throw(std::runtime_error); // parse a boiler config file, or create new one if first time.
+
+        // Throws a std::runtime_error
+        ConfigFile(char* boiler_conf_filepath, bool is_first_time = false); // parse a boiler config file, or create new one if first time.
         // ^ should throw exception if not possible.
         ~ConfigFile(); // don't forget to call this!
 

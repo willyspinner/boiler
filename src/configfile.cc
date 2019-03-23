@@ -18,7 +18,7 @@ ConfigFile::~ConfigFile() {
 ConfigFile::ConfigFile() {
 }
 
-ConfigFile::ConfigFile(char* boiler_conf_filepath, bool is_first_time) throw (std::runtime_error) {
+ConfigFile::ConfigFile(char* boiler_conf_filepath, bool is_first_time) {
     if( is_first_time ) {
         m_configfile_json = {
             { "boilerplates",nlohmann::json::array({})}

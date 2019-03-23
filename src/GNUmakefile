@@ -1,5 +1,5 @@
 CXX=g++
-FLAGS=-std=c++11 -Wall -Wextra -stdlib=libc++ -O3
+FLAGS=-std=c++11 -Wall -Wextra -O3
 default: boiler
 
 
