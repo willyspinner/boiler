@@ -8,7 +8,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <sstream>      // std::ostringstream
-#include <nlohmann/json.hpp>
+#include "nlohmann_json/single_include/nlohmann/json.hpp"
 
 #include "configfile.h"
 #include "printutils.h"

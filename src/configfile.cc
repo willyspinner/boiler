@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include <nlohmann/json.hpp>
+#include "nlohmann_json/single_include/nlohmann/json.hpp"
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>

@@ -4,3 +4,11 @@ boilerplatesrunscripts
 *.pyc
 __pycache__
 .vscode
+build
+
+
+CMakeCache.txt
+libnhlohmann.a
+CMakeFiles
+cmake_install.cmake
+Makefile
