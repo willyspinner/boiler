@@ -5,7 +5,6 @@
 #include <stdexcept>
 #include <nlohmann/json.hpp>
 #include <string>
-
 typedef struct {
     std::string name; // name of boilerplate item.
     std::string description; // description of the boilerplate.

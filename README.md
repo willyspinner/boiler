@@ -27,8 +27,8 @@ WARNING: as of now, we **cannot hardlink** to `boilerconfig.json`. Changes to bo
 ### uninstall a boilerplate
 
 ```sh
-uninstall BOILERPLATE_NAME [-x]
-# NOTE: use the -x flag to actually remove the boilerplate from the BOILERDIR/boilerplates directory. 
+uninstall BOILERPLATE_NAME [--cached or -c]
+# NOTE: uninstall deletes the boilerplate file. Use the -c or --cached  flag to preservethe boilerplate file int the BOILERDIR/boilerplates directory. 
 ```
 
 ### print a boilerplate to stdout
@@ -44,7 +44,7 @@ edit BOILERPLATE_NAME
 # edit the file of BOILERPLATE_NAME using editor `VISUAL`.
 ```
 
-> Made by Wilson Jusuf.
+
 # boilerconfig.json:
 This will host all the configuration and location of all the boilerplates.
 ```json
@@ -54,13 +54,17 @@ This will host all the configuration and location of all the boilerplates.
             "name": "name of boilerplate item.",
             "description": "description of the boilerplate",
             "boilerpath": "location relative to $BOILERDIR/boilerplates"
-        }, ...
+        }, 
     ],
 }
 ```
+# how to use:
+
+After putting the binary somewhere in your `PATH`, set the environment variable `BOILERDIR`, which is a directory `boiler` will use to put the boilerplates and configurations.
+
 # requirements to build from source:
-g++ / clang++ with c++11 support
-nlohmann/json C++ json library
+- g++ / clang++ with c++11 support
+- nlohmann/json C++ json library
 
 
 # TODO:
@@ -77,8 +81,8 @@ nlohmann/json C++ json library
     - [ ] systemd .service conf (single file)
     - [ ] golang web server (single file)
     - [ ] nodejs web server (single file)
- - [ ] DISABLE init scripts - this really is not needed - let the client do it by him/herself.
-- default command should print out the boilerplate to stdout. Add -o FILENAME file to save to FILENAME.
+ - [x] DISABLE init scripts - this really is not needed - let the client do it by him/herself.
+- [x] default command should print out the boilerplate to stdout. Add -o FILENAME file to save to FILENAME.
 - [x] Don't use the bash `tree`!
 - [x] Makefile for installation.
 - [x] Possibly move to C++ to bundle everything into one, instead of python.
@@ -87,3 +91,5 @@ nlohmann/json C++ json library
 - [x] Support for running init scripts every time boilerplate is added (e.g. npm install dependencies ... etc)
 - [x] Support for catting txt info files that outline the usage of the boilerplate every time the `add` command is run.
 
+
+> Made by Wilson Jusuf.

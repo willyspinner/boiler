@@ -4,8 +4,8 @@ default: boiler
 
 
 # main boiler file.
-boiler: boiler.o input.o printutils.o configfile.o
-	$(CC) $(FLAGS) input.o printutils.o configfile.o boiler.o -o boiler
+boiler: boiler.o input.o printutils.o configfile.o errors.o
+	$(CC) $(FLAGS) input.o printutils.o configfile.o boiler.o errors.o -o boiler
 
 # object files:
 boiler.o: boiler.cc
@@ -20,6 +20,8 @@ printutils.o: printutils.h printutils.cc
 configfile.o: configfile.cc configfile.h
 	$(CC) $(FLAGS) -c configfile.cc -o configfile.o
 
+errors.o: errors.cc errors.h
+	$(CC) $(FLAGS) -c errors.cc -o errors.o
 # make install:
 install:
 	echo "TODO: install"

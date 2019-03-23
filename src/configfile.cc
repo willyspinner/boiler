@@ -5,18 +5,17 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include "configfile.h"
 #include <stdio.h>
 #include <string>
-#include <errno.h>
 #include <streambuf>
 #include <fstream>
+#include "configfile.h"
+#include "errors.h"
 
 ConfigFile::~ConfigFile() {
 
 }
 ConfigFile::ConfigFile() {
-
 }
 
 ConfigFile::ConfigFile(char* boiler_conf_filepath, bool is_first_time) throw (std::runtime_error) {
@@ -31,9 +30,13 @@ ConfigFile::ConfigFile(char* boiler_conf_filepath, bool is_first_time) throw (st
     std::ifstream t(m_boiler_conf_filepath);
     std::string str((std::istreambuf_iterator<char>(t)),
         std::istreambuf_iterator<char>());
+    if(str.empty()) {
+        cfg_errno = EEMPTY;
+        throw std::runtime_error("empty json file.");
+    }
     m_configfile_json = nlohmann::json::parse(str, nullptr, false);
     if (m_configfile_json.is_discarded()) {
-        errno =EFTYPE;
+        cfg_errno = EINVALIDJSON;
         throw std::runtime_error("Invalid json.");
     }
 }

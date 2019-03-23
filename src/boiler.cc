@@ -13,6 +13,7 @@
 #include "configfile.h"
 #include "printutils.h"
 #include "input.h"
+#include "errors.h"
 
 const int EXIT_BDIR_NOT_FOUND = 4;
 const int EXIT_NOT_FOUND = 3;
@@ -24,11 +25,18 @@ const int EXIT_OK = 0;
 static struct option long_options[] = {
 {"name", required_argument, NULL, 'n'},
 {"description", required_argument, NULL, 'd'},
-{"soft", required_argument, NULL, 's'},
-{"hard", required_argument, NULL, 'h'},
+{"soft", no_argument, NULL, 's'},
+{"hard", no_argument, NULL, 'h'},
+{"cached", no_argument, NULL, 'c'},
 {0, 0, 0, 0}
 };
 
+std::string get_boilerplate_path(const char* boilerdir, const char * relative_path) {
+    //relative_path is relative to BOILERDIR/boilerplates
+    std::ostringstream oss(std::ostringstream::ate); 
+    oss << boilerdir << "/boilerplates/" << relative_path;
+    return oss.str();
+}
 int main (int argc, char* argv[]) {
     char* BOILERDIR = getenv("BOILERDIR");
     if (BOILERDIR == NULL) {
@@ -47,20 +55,20 @@ int main (int argc, char* argv[]) {
     try {
         cfg_file = ConfigFile(boilerconfig_json_path);
     } catch(std::runtime_error& er) {
-        printutils::print_error("read boilerconfig.json: %s.\n", strerror(errno));
         if ( errno == ENOENT) {
-            printf("boilerconfig.json doesn't exist. Creating a new boiler.conf.....");
+            printutils::print_error("read boilerconfig.json: %s.\n", strerror(errno));
+            printf("boilerconfig.json doesn't exist. Creating a new boilerconfig.json.....");
             // create a new one.
             cfg_file = ConfigFile(boilerconfig_json_path, true);
             cfg_file.save_contents();
             printf("done. \n");
-
-        } else if ( errno == EFTYPE) {
-            //this errno value means that the file exists, is writeable, but has bad format.
-            // our constructor sets this as errno.
-            bool can_overwrite = input::prompt_bool_answer("I detected a bad/empty boilerconfig.json file. Can I overwrite it?");
+        } else if ( cfg_errno == EINVALIDJSON) {
+            printutils::print_error("invalid boilerconfig.json structure. Please fix it.\n");
+            return EXIT_GEN_FAILURE;
+        } else if ( cfg_errno == EEMPTY) {
+            bool can_overwrite = input::prompt_bool_answer("I detected an empty boilerconfig.json file. Can I overwrite it?");
             if (!can_overwrite) {
-                printutils::print_error("Please check your boilerconfig.json and fix it. \n");
+                printutils::print_error("Please fill up the boilerconfig.json file. \n");
                 return EXIT_GEN_FAILURE;
             }
             printf("OK. Overwriting...\n");
@@ -75,12 +83,13 @@ int main (int argc, char* argv[]) {
     std::string new_name = "";
     char link_mode = '\0';
     std::string new_description = "";
+    bool is_cached = false;
     //NOTE: we are doing this because getopt_long shuffles argv.
     char* argv_temp[argc];
     for(int i = 0; i < argc; ++i) {
         argv_temp[i] = argv[i];
     }
-    while((c = getopt_long(argc, argv_temp, "d:n:hs", long_options, &counter)) != -1) {
+    while((c = getopt_long(argc, argv_temp, "d:n:hsc", long_options, &counter)) != -1) {
         switch (c) {
             case 's': case 'h':
                 link_mode = c;
@@ -90,6 +99,9 @@ int main (int argc, char* argv[]) {
                 break;
             case 'd':
                 new_description = std::string(optarg);
+                break;
+            case 'c':
+                is_cached  = true;
                 break;
             case '?':
                 return EXIT_BAD_ARG;
@@ -144,9 +156,7 @@ int main (int argc, char* argv[]) {
             std::string name = boilerplate["name"].get<std::string>();
             std::string boilerpath = boilerplate["boilerpath"].get<std::string>();
             if (strcmp(boilerplate_name, name.c_str()) == 0) {
-                std::ostringstream oss(std::ostringstream::ate); 
-                oss << BOILERDIR << "/boilerplates/" << boilerpath;
-                std::string whole_path = oss.str();
+                std::string whole_path = get_boilerplate_path(BOILERDIR, boilerpath.c_str());
                 int boiler_file_fd;
                 if ((boiler_file_fd = open(whole_path.c_str(), O_RDONLY)) == -1) {
                     printutils::print_error("couldn't open boilerplate file %s for reading: %s", whole_path.c_str(), strerror(errno));
@@ -180,13 +190,11 @@ int main (int argc, char* argv[]) {
             std::string name = std::string(boilerplate["name"].get<std::string>());
             std::string boilerpath= std::string(boilerplate["boilerpath"].get<std::string>());
             if (strcmp(boilerplate_name, name.c_str()) == 0) {
-                std::ostringstream oss(std::ostringstream::ate); 
-                oss << BOILERDIR << "/boilerplates/" << boilerpath;
-                std::string whole_path = oss.str();
+                std::string whole_path = get_boilerplate_path(BOILERDIR, boilerpath.c_str());
                 int denied = access(whole_path.c_str(), R_OK | W_OK);
                 if (denied) {
                     printutils::print_error("Error in accessing %s: %s",whole_path.c_str(), strerror(errno));
-                    return EXIT_FAILURE;
+                    return EXIT_GEN_FAILURE;
                 }
                 //std::string visual(getenv("VISUAL"));
                 std::string visual;
@@ -221,10 +229,8 @@ int main (int argc, char* argv[]) {
             new_description = input::prompt_string_answer("Please input description of the boilerplate: ");
         }
         std::string b_filename(basename(boilerplate_file));
+        std::string destination = get_boilerplate_path(BOILERDIR, b_filename.c_str());
 
-        std::ostringstream oss(std::ostringstream::ate); 
-        oss << BOILERDIR << "/boilerplates/" << b_filename;
-        std::string destination = oss.str();
         const boiler_item bti = {new_name, new_description, b_filename};
         bool no_duplicates = cfg_file.add_boiler_item(bti);
         if(!no_duplicates) {
@@ -298,7 +304,7 @@ int main (int argc, char* argv[]) {
         }
         printf("boilerplate \"%s\" saved!\n", new_name.c_str());
         
-    } else if (strcmp(command_str, "uninstall") == 0 || strcmp(command_str, "r") == 0 || strcmp(command_str, "remove" )== 0 || strcmp(command_str, "rm") == 0) {
+    } else if (strcmp(command_str, "uninstall") == 0 || strcmp(command_str, "r") == 0 || strcmp(command_str, "remove" ) == 0 || strcmp(command_str, "rm") == 0) {
         if(argc < 3) {
             printutils::print_command_usage("uninstall");
             return EXIT_BAD_ARG;
@@ -312,10 +318,10 @@ int main (int argc, char* argv[]) {
                 bool success = cfg_file.remove_boiler_item(name);
                 if(success) {
                     boilerpath = std::string(boilerplate["boilerpath"].get<std::string>());
-                    std::ostringstream oss(std::ostringstream::ate); 
-                    oss << BOILERDIR << "/boilerplates/" << boilerpath;
-                    std::string whole_path = oss.str();
-                    unlink(whole_path.c_str());
+                    std::string whole_path = get_boilerplate_path(BOILERDIR, boilerpath.c_str());
+                    if(!is_cached) {
+                        unlink(whole_path.c_str());
+                    }
                     cfg_file.save_contents();
                     printf("Successfully uninstalled %s\n", name.c_str());
                     return EXIT_OK;
