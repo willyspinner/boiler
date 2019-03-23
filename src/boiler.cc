@@ -60,7 +60,11 @@ int main (int argc, char* argv[]) {
             printf("boilerconfig.json doesn't exist. Creating a new boilerconfig.json.....");
             // create a new one.
             cfg_file = ConfigFile(boilerconfig_json_path, true);
-            cfg_file.save_contents();
+            bool save_ok = cfg_file.save_contents();
+            if(!save_ok) {
+                printutils::print_error("\nCould not save boilerconfig.json. %s", strerror(errno));
+                return EXIT_SYSCALL_FAILURE;
+            }
             printf("done. \n");
         } else if ( cfg_errno == EINVALIDJSON) {
             printutils::print_error("invalid boilerconfig.json structure. Please fix it.\n");
@@ -73,10 +77,15 @@ int main (int argc, char* argv[]) {
             }
             printf("OK. Overwriting...\n");
             cfg_file = ConfigFile(boilerconfig_json_path, true);
-            cfg_file.save_contents();
+            bool overwrite_ok = cfg_file.save_contents();
+            if(!overwrite_ok) {
+                printutils::print_error("Failed to overwrite: %s. \n", strerror(errno));
+                return EXIT_SYSCALL_FAILURE;
+            }
         } else {
             return EXIT_SYSCALL_FAILURE;
         }
+        return EXIT_OK;
     }
 
     int c, counter;
@@ -322,7 +331,11 @@ int main (int argc, char* argv[]) {
                     if(!is_cached) {
                         unlink(whole_path.c_str());
                     }
-                    cfg_file.save_contents();
+                    bool save_ok = cfg_file.save_contents(); 
+                    if(!save_ok) {
+                        printutils::print_error("Could not update boilerconfig.json. %s", strerror(errno));
+                        return EXIT_SYSCALL_FAILURE;
+                    }
                     printf("Successfully uninstalled %s\n", name.c_str());
                     return EXIT_OK;
                 } else {
